@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import Searchbar from './Searchbar';
 import ImageGallery from './ImageGallery';
 import Button from './Button';
@@ -17,25 +17,25 @@ const App = () => {
   const [setError] = useState(null);
 
   useEffect(() => {
-    getPhotos();
-  }, [page, query, getPhotos]);
+    const getPhotos = async () => {
+      setIsLoading(true);
+      try {
+        const { hits, totalHits } = await fetchImages(query, page);
 
-  const getPhotos = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const { hits, totalHits } = await fetchImages(query, page);
+        if (hits.length === 0) {
+          alert("We don't found");
+        }
 
-      if (hits.length === 0) {
-        alert("We don't found");
+        setImages(prevImages => [...prevImages, ...hits]);
+        setLoadMore(page < Math.ceil(totalHits / 12));
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      setImages(prevImages => [...prevImages, ...hits]);
-      setLoadMore(page < Math.ceil(totalHits / 12));
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setIsLoading(false);
-    }
+    getPhotos();
   }, [page, query, setError]);
 
   const handleSearchSubmit = newQuery => {
