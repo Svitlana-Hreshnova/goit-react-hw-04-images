@@ -18,7 +18,7 @@ const App = () => {
 
   useEffect(() => {
     getPhotos();
-  }, [page, query]);
+  }, [page, query, getPhotos]);
 
   const getPhotos = useCallback(async () => {
     setIsLoading(true);
@@ -36,7 +36,7 @@ const App = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [page, query]);
+  }, [page, query, setError]);
 
   const handleSearchSubmit = newQuery => {
     setQuery(newQuery);
