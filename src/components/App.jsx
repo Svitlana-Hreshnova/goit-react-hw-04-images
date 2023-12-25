@@ -18,6 +18,10 @@ const App = () => {
 
   useEffect(() => {
     const getPhotos = async () => {
+      if (!query) {
+        return;
+      }
+
       setIsLoading(true);
       try {
         const { hits, totalHits } = await fetchImages(query, page);
